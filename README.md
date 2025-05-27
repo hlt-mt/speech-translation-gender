@@ -22,17 +22,23 @@ pip install -r requirements.txt
 
 ## 🚀 Example Usage
 
-The following examples demonstrate how to extract hidden states from speech translation models, 
-train a probing classifier, and evaluate its performance. 
+The following code examples demonstrate how to replicate the results presented in the paper. 
+The process includes preprocessing, training probe classifiers, and evaluating translations.
 
-Below is a description of the required parameters:
-- `${*_data_tsv}` refers to the TSV files containing the training, validation, or test datasets.
-- `${*_embeddings_h5}` is the path to the HDF5 file where the extracted hidden states will be stored.
-- `${lang}` specifies the language code of the input data (`es`, `fr`, `it`).
-- `${model}` is the name of the model hosted on the Hugging Face Hub (`facebook/seamless-m4t-v2-large`, 
-`johntsi/ZeroSwot-Large_asr-cv_en-to-200`, `facebook/s2t-medium-mustc-multilingual-st`).
-- `${saved_probe}` defines the path where the trained probe will be saved during training, and from which 
-it will be loaded during evaluation.
+### Data Preprocessing
+
+We use the [MuST-C corpus]() as our primary dataset. The preprocessing steps are as follows:
+
+1. **Filter Training Data**  
+   Sentences labeled with speaker gender (based on the [MuST-Speaker resource]()) are sampled from the raw training data using the `cli/filter_train_data.py` script.
+
+2. **Filter Evaluation Data**  
+   From the [MuST-SHE]() dataset, we retain only Category 1 sentences spoken by speakers labeled as either Male or Female. This is done using the `cli/filter_tst_dev_data.py` script.
+
+3. **Preprocessing**  
+   All filtered data is preprocessed using the `cli/preprocess_data.py` script, which generates `${*_data_tsv}`
+   files containing all the necessary information.
+
 
 ### Extract Hidden States
 
@@ -44,6 +50,12 @@ the `${layer}` parameter can be set to either:
 
 For the model `facebook/s2t-medium-mustc-multilingual-st`, only the `post_adapter` setting is supported.
 The `--max-seq-len` parameter is always set to `60`, meaning input audio is trimmed to a maximum duration of 60 seconds.
+
+Other useful arguments include:
+- `${*_embeddings_h5}` is the path to the HDF5 file where the extracted hidden states will be stored.
+- `${lang}` specifies the language code of the input data (`es`, `fr`, `it`).
+- `${model}` is the name of the model hosted on the Hugging Face Hub (`facebook/seamless-m4t-v2-large`, 
+`johntsi/ZeroSwot-Large_asr-cv_en-to-200`, `facebook/s2t-medium-mustc-multilingual-st`).
 
 ```
 python /path/to/speech-translation-gender/cli/extract_embeddings.py \
@@ -57,6 +69,10 @@ python /path/to/speech-translation-gender/cli/extract_embeddings.py \
 As a probe, we use an attention-based classifier (see the paper for more details), 
 which produces an output for the entire input sequence. 
 The training hyperparameters are the same as those used to obtain the final results.
+
+The argument `${saved_probe}` defines the path where the trained probe will be saved during training, and from which 
+it will be loaded during evaluation.
+
 
 ```
 python /path/to/speech-translation-gender/cli/train_probe.py \
