@@ -10,8 +10,8 @@ These instructions will help you set up the environment and run the core experim
 ### 1. Clone the Repository
 
 ```
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/dennisfcc/speech-translation-gender.git
+cd speech-translation-gender
 ```
 
 ### 2. Install Dependencies
@@ -35,7 +35,7 @@ it will be loaded during evaluation.
 ### Extract States
 
 ```
-python /path/to/speech-gender/cli/extract_embeddings.py \
+python /path/to/speech-translation-gender/cli/extract_embeddings.py \
   --tsv-path ${*_data_tsv} --output-file ${*_embeddings_h5} \
   --lang ${lang} --model-name ${model_name} \
   --layer post_adapter --num-workers 0 --max-seq-len 60
@@ -44,7 +44,7 @@ python /path/to/speech-gender/cli/extract_embeddings.py \
 ### Train Probe
 
 ```
-python /path/to/speech-gender/cli/train_probe.py \
+python /path/to/speech-translation-gender/cli/train_probe.py \
   --dataframe-train ${train_data_tsv} --embeddings-train ${train_embeddings_h5} \
   --dataframe-val ${validation_data_tsv} --embeddings-val ${validation_embeddings_h5} \
   --probe attention --level sequence --attention-type scaled_dot \
@@ -56,7 +56,7 @@ python /path/to/speech-gender/cli/train_probe.py \
 ### Evaluate Probe
 
 ```
-python /path/to/speech-gender/cli/evaluate_probe.py \
+python /path/to/speech-translation-gender/cli/evaluate_probe.py \
   --dataframe ${data_tsv_file} --embeddings ${embeddings_h5_file} \
   --output-tsv ${output_tsv_file} \
   --probe attention --attention-type scaled_dot --num-layers 1 \
@@ -76,7 +76,7 @@ gender accuracy and coverage.
 
 ```
 # Generate translations
-python /path/to/speech-gender/cli/transcribe_data.py \
+python /path/to/speech-translation-gender/cli/transcribe_data.py \
   --tsv-path ${test_data_tsv} --lang ${lang} --model-name ${model_name} --output-file ${output_tsv} \
   --num-workers 0 --batch-size 1 --max-seq-len 60
 
@@ -88,12 +88,20 @@ python /path/to/mustshe-directory/MuST-SHE-v1.1-eval-script/mustshe_acc_v1.1.py 
 rm __h__
 
 # Evaluate translation quality
-python /path/to/speech-gender/cli/evaluate_translation.py --file-path ${output_tsv} 
+python /path/to/speech-translation-gender/cli/evaluate_translation.py --file-path ${output_tsv} 
 ```
 
 
 ## 📄 Citing the Paper
 
 ```
-TO BE ADDED
+@inproceedings{fucci-et-al-2025-different,
+title = "Different Speech Translation Models Encode and Translate Speaker Gender Differently",
+author = {Fucci, Dennis and Gaido, Marco and Negri, Matteo and Bentivogli, Luisa and 
+Martins, André F. T. and Attanasio, Giuseppe},
+booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics",
+year = "2025",
+address = "Vienna, Austria",
+publisher = "Association for Computational Linguistics"
+}
 ```
