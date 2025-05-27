@@ -22,26 +22,43 @@ pip install -r requirements.txt
 
 ## 🚀 Example Usage
 
-The following examples demonstrate how to extract hidden states from speech translation models, train a probing classifier, and evaluate its performance. 
+The following examples demonstrate how to extract hidden states from speech translation models, 
+train a probing classifier, and evaluate its performance. 
 
 Below is a description of the required parameters:
 - `${*_data_tsv}` refers to the TSV files containing the training, validation, or test datasets.
 - `${*_embeddings_h5}` is the path to the HDF5 file where the extracted hidden states will be stored.
-- `${lang}` specifies the language code of the input data (es, fr, it).
-- `${model}` is the name of the model hosted on the Hugging Face Hub.
+- `${lang}` specifies the language code of the input data (`es`, `fr`, `it`).
+- `${model}` is the name of the model hosted on the Hugging Face Hub (`facebook/seamless-m4t-v2-large`, 
+`johntsi/ZeroSwot-Large_asr-cv_en-to-200`, `facebook/s2t-medium-mustc-multilingual-st`).
 - `${saved_probe}` defines the path where the trained probe will be saved during training, and from which 
 it will be loaded during evaluation.
 
 ### Extract States
 
+### Hidden State Extraction
+
+The first step is to extract hidden states from the ST models.
+For the `facebook/seamless-m4t-v2-large` and `johntsi/ZeroSwot-Large_asr-cv_en-to-200` models, 
+the `${layer}` parameter can be set to either:
+- `post_adapter`: hidden states are extracted **after** the adapter layers (if present) on top of the encoder.
+- `pre_adapter`: hidden states are extracted **before** the adapter layers.
+
+For the model `facebook/s2t-medium-mustc-multilingual-st`, only the `post_adapter` setting is supported.
+The `--max-seq-len` parameter is always set to `60`, meaning input audio is trimmed to a maximum duration of 60 seconds.
+
 ```
 python /path/to/speech-translation-gender/cli/extract_embeddings.py \
   --tsv-path ${*_data_tsv} --output-file ${*_embeddings_h5} \
   --lang ${lang} --model-name ${model_name} \
-  --layer post_adapter --num-workers 0 --max-seq-len 60
+  --layer ${layer} --num-workers 0 --max-seq-len 60
 ```
 
 ### Train Probe
+
+As a probe, we use an attention-based classifier (see the paper for more details), 
+which produces an output for the entire input sequence. 
+The training hyperparameters are the same as those used to obtain the final results.
 
 ```
 python /path/to/speech-translation-gender/cli/train_probe.py \
@@ -55,6 +72,8 @@ python /path/to/speech-translation-gender/cli/train_probe.py \
 
 ### Evaluate Probe
 
+The trained probe can be evaluated using the following code.
+
 ```
 python /path/to/speech-translation-gender/cli/evaluate_probe.py \
   --dataframe ${data_tsv_file} --embeddings ${embeddings_h5_file} \
@@ -63,16 +82,15 @@ python /path/to/speech-translation-gender/cli/evaluate_probe.py \
   --level sequence --pretrained-probe ${saved_probe} --batch-size 32
 ```
 
-The following examples demonstrate how to generate translations and evaluate them. For gender accuracy evaluation, 
-the official MuST-SHE script is used, which also requires `mosesdecoder` for tokenization.
-
-Translations are saved in the `${output_tsv}` TSV file. 
-The scripts print evaluation results, which include both general translation quality and 
-gender accuracy and coverage.
-
-
 
 ### Evaluate Translations
+
+To generate and evaluate translations, use the following code.
+
+Translations are saved to the `${output_tsv}` file in TSV format.
+- **Gender accuracy** is evaluated using the official MuST-SHE script, 
+which requires the `mosesdecoder` for tokenization.
+- **Translation quality** is assessed using the `cli/evaluate_translation.py` script.
 
 ```
 # Generate translations
@@ -105,5 +123,3 @@ address = "Vienna, Austria",
 publisher = "Association for Computational Linguistics"
 }
 ```
-
-treno: 200
