@@ -184,19 +184,41 @@ def process(args):
 
         # Saving tsv file
         df = pd.DataFrame.from_dict(manifest)
-        df = filter_train_manifest_df(df, min_n_frames=8000,
-                                      max_n_frames=960000)  # min 0.5s, max 60s --> MuST-SHE cat1 range
+        df = filter_train_manifest_df(
+            df, min_n_frames=8000, max_n_frames=960000)  # min 0.5s, max 60s --> MuST-SHE cat1 range
         df.rename(columns={"n_frames": "n_samples"}, inplace=True)
         save_df_to_tsv(df, save_root / f"{split}_preprocessed.tsv")
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-root", "-data", required=True, type=str)
-    parser.add_argument("--save-dir", "-save", required=True, type=str)
-    parser.add_argument("--wav-dir", "-wav", required=True, type=str)
-    parser.add_argument("--splits", "-s", nargs='+', required=True, type=str)
-    parser.add_argument("--gender", required=True, type=str)
+    parser.add_argument(
+        "--data-root",
+        required=True,
+        type=str,
+        help="Path to the folder where data are located.")
+    parser.add_argument(
+        "--save-dir",
+        required=True,
+        type=str,
+        help="Path to the folder where data will be saved.")
+    parser.add_argument(
+        "--wav-dir",
+        required=True,
+        type=str,
+        help="Path to the folder where audio files are located.")
+    parser.add_argument(
+        "--splits",
+        nargs='+',
+        required=True,
+        type=str,
+        help="List of split names to be preprocessed.")
+    parser.add_argument(
+        "--gender",
+        choices=["He", "She"],
+        required=True,
+        type=str,
+        help="The gender split to be preprocessed.")
     args = parser.parse_args()
 
     process(args)
