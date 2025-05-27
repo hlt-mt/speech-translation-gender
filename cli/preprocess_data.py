@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import csv
 from typing import Tuple, Union, BinaryIO
