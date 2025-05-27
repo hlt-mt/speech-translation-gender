@@ -12,7 +12,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 import torch.nn.init as init
 
-from src.probes import BaseProbe, CustomDataset, collate_fn, register_probe
+from src.probes import BaseProbe, register_probe
+from src.dataset import CustomDataset, collate_fn
 
 
 LOGGER = logging.getLogger(__name__)

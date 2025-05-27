@@ -12,7 +12,8 @@ from torch import optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
-from src.probes import collate_fn, CustomDataset, register_probe
+from src.probes import register_probe
+from src.dataset import CustomDataset, collate_fn
 from src.probes.feedforward import FeedForwardProbe
 
 
