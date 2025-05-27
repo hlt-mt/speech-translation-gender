@@ -34,9 +34,7 @@ Below is a description of the required parameters:
 - `${saved_probe}` defines the path where the trained probe will be saved during training, and from which 
 it will be loaded during evaluation.
 
-### Extract States
-
-### Hidden State Extraction
+### Extract Hidden States
 
 The first step is to extract hidden states from the ST models.
 For the `facebook/seamless-m4t-v2-large` and `johntsi/ZeroSwot-Large_asr-cv_en-to-200` models, 
