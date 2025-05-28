@@ -30,17 +30,17 @@ The process includes data preprocessing, training probe classifiers, and evaluat
 We use the [MuST-C corpus](https://www.sciencedirect.com/science/article/abs/pii/S0885230820300887) 
 as our primary dataset. The preprocessing steps are as follows:
 
-1. **Filter Training Data**  
-   Sentences labeled with speaker gender (based on the [MuST-Speaker resource](https://aclanthology.org/2020.coling-main.350/)) 
-are sampled from the raw training data using the `cli/filter_train_data.py` script.
+1. **Filter Training Data**
+Sentences labeled with speaker gender (based on the MuST-Speaker resource) are sampled from the raw training data 
+using the `cli/filter_train_data.py` script to create the training and validation datasets.
 
-2. **Filter Evaluation Data**  
-   From the [MuST-SHE](https://aclanthology.org/2020.acl-main.619/) dataset, we retain only Category 1 sentences spoken 
+2. **Filter Test Data**  
+From the [MuST-SHE](https://aclanthology.org/2020.acl-main.619/) dataset, we retain only Category 1 sentences spoken 
 by speakers labeled as either Male or Female. This is done using the `cli/filter_tst_dev_data.py` script.
 
 3. **Preprocessing**  
-   All filtered data is preprocessed using the `cli/preprocess_data.py` script, which generates `${*_data_tsv}`
-   files containing all the necessary information.
+All filtered data is preprocessed using the `cli/preprocess_data.py` script, which generates `${*_data_tsv}` 
+files containing all the necessary information.
 
 
 ### Extract Hidden States
