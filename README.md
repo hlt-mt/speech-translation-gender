@@ -9,31 +9,34 @@ These instructions will help you set up the environment and run the core experim
 
 ### 1. Clone the Repository
 
-```
+```bash
 git clone https://github.com/dennisfcc/speech-translation-gender.git
 cd speech-translation-gender
 ```
 
 ### 2. Install Dependencies
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 ## 🚀 Example Usage
 
 The following code examples demonstrate how to replicate the results presented in the paper. 
-The process includes preprocessing, training probe classifiers, and evaluating translations.
+The process includes data preprocessing, training probe classifiers, and evaluating translations.
 
 ### Data Preprocessing
 
-We use the [MuST-C corpus]() as our primary dataset. The preprocessing steps are as follows:
+We use the [MuST-C corpus](https://www.sciencedirect.com/science/article/abs/pii/S0885230820300887) 
+as our primary dataset. The preprocessing steps are as follows:
 
 1. **Filter Training Data**  
-   Sentences labeled with speaker gender (based on the [MuST-Speaker resource]()) are sampled from the raw training data using the `cli/filter_train_data.py` script.
+   Sentences labeled with speaker gender (based on the [MuST-Speaker resource](https://aclanthology.org/2020.coling-main.350/)) 
+are sampled from the raw training data using the `cli/filter_train_data.py` script.
 
 2. **Filter Evaluation Data**  
-   From the [MuST-SHE]() dataset, we retain only Category 1 sentences spoken by speakers labeled as either Male or Female. This is done using the `cli/filter_tst_dev_data.py` script.
+   From the [MuST-SHE](https://aclanthology.org/2020.acl-main.619/) dataset, we retain only Category 1 sentences spoken 
+by speakers labeled as either Male or Female. This is done using the `cli/filter_tst_dev_data.py` script.
 
 3. **Preprocessing**  
    All filtered data is preprocessed using the `cli/preprocess_data.py` script, which generates `${*_data_tsv}`
@@ -57,7 +60,7 @@ Other useful arguments include:
 - `${model}` is the name of the model hosted on the Hugging Face Hub (`facebook/seamless-m4t-v2-large`, 
 `johntsi/ZeroSwot-Large_asr-cv_en-to-200`, `facebook/s2t-medium-mustc-multilingual-st`).
 
-```
+```bash
 python /path/to/speech-translation-gender/cli/extract_embeddings.py \
   --tsv-path ${*_data_tsv} --output-file ${*_embeddings_h5} \
   --lang ${lang} --model-name ${model_name} \
@@ -74,7 +77,7 @@ The argument `${saved_probe}` defines the path where the trained probe will be s
 it will be loaded during evaluation.
 
 
-```
+```bash
 python /path/to/speech-translation-gender/cli/train_probe.py \
   --dataframe-train ${train_data_tsv} --embeddings-train ${train_embeddings_h5} \
   --dataframe-val ${validation_data_tsv} --embeddings-val ${validation_embeddings_h5} \
@@ -106,7 +109,7 @@ Translations are saved to the `${output_tsv}` file in TSV format.
 which requires the `mosesdecoder` for tokenization.
 - **Translation quality** is assessed using the `cli/evaluate_translation.py` script.
 
-```
+```bash
 # Generate translations
 python /path/to/speech-translation-gender/cli/transcribe_data.py \
   --tsv-path ${test_data_tsv} --lang ${lang} --model-name ${model_name} --output-file ${output_tsv} \
